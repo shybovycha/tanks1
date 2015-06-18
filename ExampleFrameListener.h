@@ -135,18 +135,18 @@ public:
         showDebugOverlay(true);
 
         //Register as a Window listener
-        WindowEventUtilities::addWindowEventListener(mWindow, this);        
+        WindowEventUtilities::addWindowEventListener(mWindow, this);
     }
 
 #ifdef INCLUDE_RTSHADER_SYSTEM
     virtual void processShaderGeneratorInput()
-    {       
+    {
         // Switch to default scheme.
         if (mKeyboard->isKeyDown(OIS::KC_F2))
-        {   
-            mCamera->getViewport()->setMaterialScheme(MaterialManager::DEFAULT_SCHEME_NAME);            
+        {
+            mCamera->getViewport()->setMaterialScheme(MaterialManager::DEFAULT_SCHEME_NAME);
             mDebugText = "Active Viewport Scheme: ";
-            mDebugText += MaterialManager::DEFAULT_SCHEME_NAME;                     
+            mDebugText += MaterialManager::DEFAULT_SCHEME_NAME;
         }
 
         // Switch to shader generator scheme.
@@ -155,15 +155,15 @@ public:
             mCamera->getViewport()->setMaterialScheme(RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME);
             mDebugText = "Active Viewport Scheme: ";
             mDebugText += RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME;
-        }   
+        }
 
         // Toggles per pixel per light model.
         if (mKeyboard->isKeyDown(OIS::KC_F4) && mTimeUntilNextToggle <= 0)
-        {   
+        {
             mTimeUntilNextToggle = 1.0;
 
             static bool userPerPixelLightModel = true;
-            RTShader::ShaderGenerator* shaderGenerator = RTShader::ShaderGenerator::getSingletonPtr();          
+            RTShader::ShaderGenerator* shaderGenerator = RTShader::ShaderGenerator::getSingletonPtr();
             RTShader::RenderState* renderState = shaderGenerator->getRenderState(RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME);
 
             // Remove all global sub render states.
@@ -187,8 +187,8 @@ public:
             shaderGenerator->invalidateScheme(RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME);
 
             userPerPixelLightModel = !userPerPixelLightModel;
-        }   
-        
+        }
+
     }
 
 #endif
@@ -224,7 +224,7 @@ public:
     }
 
     virtual ~ExampleFrameListener()
-    {       
+    {
         //Remove ourself as a Window listener
         WindowEventUtilities::removeWindowEventListener(mWindow, this);
         windowClosed(mWindow);
@@ -365,7 +365,7 @@ public:
                     mRotX = -origRotY;
                     mRotY = origRotX;
                     break;
-                    
+
                 // Portrait doesn't need any change
                 case Viewport::OR_PORTRAIT:
                 default:

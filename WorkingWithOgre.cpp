@@ -122,7 +122,7 @@ bool Workingwithogre::go(void) {
     Ogre::Entity* tank1Entity = mSceneMgr->createEntity("tank1", "Body.mesh");
     Ogre::SceneNode* tank1 = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0,5,0));
     tank1->attachObject(tank1Entity);
-    tank1->scale(40, 40, 40);//увеличиваем
+    //tank1->scale(40, 40, 40);//увеличиваем
     Ogre::SkeletonInstance* tank1Skeleton = tank1Entity->getSkeleton();
     Ogre::Bone* tank1TowerBone = tank1Skeleton->getBone("TowerBone");
 
@@ -131,18 +131,19 @@ bool Workingwithogre::go(void) {
     Ogre::Bone* tower1Bone = tower1Skeleton->getBone("Bone");
 
     Ogre::Matrix3 tower1Orientation;
-    tower1Orientation.FromEulerAnglesXYZ(Ogre::Degree(90), Ogre::Degree(-90), Ogre::Degree(0));
-    Ogre::TagPoint* tower1 = tank1Entity->attachObjectToBone("TowerBone", tower1Entity, tower1Orientation);
-    tower1->scale(0.4, 0.4, 0.4);
+    //tower1Orientation.FromEulerAnglesXYZ(Ogre::Degree(0), Ogre::Degree(-90), Ogre::Degree(0));
+    //Ogre::Vector3 tower1Offset(0, 0, 0);
+    Ogre::TagPoint* tower1 = tank1Entity->attachObjectToBone("TowerBone", tower1Entity);
+    //tower1->scale(0.4, 0.4, 0.4);
 
     Ogre::Entity* gun1Entity = mSceneMgr->createEntity("gun1", "Gun1.mesh");
     Ogre::Matrix3 gun1Orientation;
-    gun1Orientation.FromEulerAnglesXYZ(Ogre::Degree(0), Ogre::Degree(90), Ogre::Degree(0));
-    Ogre::Vector3 gun1Offset(0.85, 0, 0);
-    Ogre::TagPoint* gun1 = tower1Entity->attachObjectToBone("Bone", gun1Entity, gun1Orientation, gun1Offset);
-    gun1->scale(0.1, 0.1, 0.1);
+    //gun1Orientation.FromEulerAnglesXYZ(Ogre::Degree(0), Ogre::Degree(90), Ogre::Degree(0));
+    //Ogre::Vector3 gun1Offset(0, 0, 0);
+    Ogre::TagPoint* gun1 = tower1Entity->attachObjectToBone("Bone", gun1Entity);
+    //gun1->scale(0.1, 0.1, 0.1);
 
-    mSkeletonDebugger = new SkeletonDebug(tank1Entity, mSceneMgr, mCamera, 1.0);
+    mSkeletonDebugger = new SkeletonDebug(tank1Entity, mSceneMgr, mCamera);
 
     std::vector<Ogre::Entity*> wheelEntities;
     std::vector<Ogre::TagPoint*> wheels;
@@ -152,7 +153,7 @@ bool Workingwithogre::go(void) {
     	Ogre::String boneName = (boost::format("LeftWheel%1%Bone") % i).str();
     	Ogre::Entity* entity = mSceneMgr->createEntity(tagName, "Wheel.mesh");
     	Ogre::TagPoint* wheel = tank1Entity->attachObjectToBone(boneName, entity);
-    	wheel->scale(0.25, 0.25, 0.25);
+    	//wheel->scale(0.25, 0.25, 0.25);
 
     	wheelEntities.push_back(entity);
     	wheels.push_back(wheel);
@@ -163,7 +164,7 @@ bool Workingwithogre::go(void) {
     	Ogre::String boneName = (boost::format("RightWheel%1%Bone") % i).str();
     	Ogre::Entity* entity = mSceneMgr->createEntity(tagName, "Wheel.mesh");
     	Ogre::TagPoint* wheel = tank1Entity->attachObjectToBone(boneName, entity);
-    	wheel->scale(0.25, 0.25, 0.25);
+    	//wheel->scale(0.25, 0.25, 0.25);
 
     	wheelEntities.push_back(entity);
     	wheels.push_back(wheel);
@@ -262,8 +263,6 @@ bool Workingwithogre::frameRenderingQueued(const Ogre::FrameEvent& evt) {
         /*mAnimation->setLoop(true);
         mAnimation->addTime(evt.timeSinceLastFrame);
         mAnimation->setEnabled(true);*/
-
-        mSkeletonDebugger->update();
     }
     return true;
 }
