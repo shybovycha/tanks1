@@ -1,5 +1,7 @@
-#ifndef __Workingwithogre_h_
-#define __Workingwithogre_h_
+#ifndef __TANKS_APPLICATION_H__
+#define __TANKS_APPLICATION_H__
+
+#include <Ogre.h>
 #include <OgreCamera.h>
 #include <OgreEntity.h>
 #include <OgreLogManager.h>
@@ -14,15 +16,17 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 #include <boost/format.hpp>
+#include <chaiscript/chaiscript.hpp>
+#include <chaiscript/chaiscript_stdlib.hpp>
 #include "SdkTrays.h"
 #include "SdkCameraMan.h"
 #include "SkeletonDebug.h"
 
-class Workingwithogre : public Ogre::FrameListener, public Ogre::WindowEventListener,
+class TanksApplication : public Ogre::FrameListener, public Ogre::WindowEventListener,
     public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener {
 public:
-    Workingwithogre(void);
-    virtual ~Workingwithogre(void);
+    TanksApplication(void);
+    virtual ~TanksApplication(void);
     bool go(void);
 
 protected:
@@ -35,6 +39,7 @@ protected:
     Ogre::AnimationState* mAnimation;
     Ogre::OverlaySystem *mOverlaySystem;
     SkeletonDebug* mSkeletonDebugger;
+    chaiscript::ChaiScript* mChai;
 
     //OGREBITES
     //====================================================
@@ -69,5 +74,14 @@ protected:
     //====================================================
     virtual void windowResized(Ogre::RenderWindow* rw);
     virtual void windowClosed(Ogre::RenderWindow* rw);
+
+    // Scripting-exposed methods
+    void log(Ogre::String message);
+    void loadEntity(Ogre::String entityName, Ogre::String meshFilename);
+    void createSceneNode(Ogre::String sceneNodeName, Ogre::String parentNodeName);
+    void attachEntityToSceneNode(Ogre::String entityName, Ogre::String sceneNodeName);
+    void scaleSceneNode(Ogre::String entityName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz);
+    void translateSceneNode(Ogre::String entityName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz);
+    void rotateSceneNode(Ogre::String entityName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz);
 };
 #endif

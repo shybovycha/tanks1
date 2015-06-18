@@ -1,0 +1,7 @@
+def load() {
+    loadEntity("tank2", "Body1.mesh");
+    createSceneNode("tank2Node", "root");
+    attachEntityToSceneNode("tank2", "tank2Node");
+}
+
+load();
