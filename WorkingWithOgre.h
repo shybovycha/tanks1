@@ -7,13 +7,16 @@
 #include <OgreViewport.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
+#include <OgreTagPoint.h>
 #include <OgreConfigFile.h>
 #include <OISEvents.h>
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
+#include <boost/format.hpp>
 #include "SdkTrays.h"
 #include "SdkCameraMan.h"
+#include "SkeletonDebug.h"
 
 class Workingwithogre : public Ogre::FrameListener, public Ogre::WindowEventListener,
     public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener {
@@ -31,6 +34,7 @@ protected:
     Ogre::String mPluginsCfg;
     Ogre::AnimationState* mAnimation;
     Ogre::OverlaySystem *mOverlaySystem;
+    SkeletonDebug* mSkeletonDebugger;
 
     //OGREBITES
     //====================================================

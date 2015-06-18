@@ -1,0 +1,5 @@
+FreeSans
+{
+	type truetype
+	source FreeSans.ttf
+}
