@@ -568,7 +568,7 @@ set(OGRE_MEDIA_SEARCH_PATH
 )
 set(OGRE_MEDIA_SEARCH_SUFFIX
   Samples/Media
-  Media
+  ../Media
   media
   share/OGRE/media
   share/OGRE/Media
