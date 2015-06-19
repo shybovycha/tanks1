@@ -16,9 +16,9 @@ TanksApplication::TanksApplication(void)
           mMouse(0),
           mOverlaySystem(0),
           mSkeletonDebugger(0),
-          mKeyboard(0),
-          mChai(new chaiscript::ChaiScript(chaiscript::Std_Lib::library()))
-          { }
+          mKeyboard(0)
+{
+}
 
 TanksApplication::~TanksApplication(void) {
     if (mTrayMgr) delete mTrayMgr;
@@ -27,50 +27,6 @@ TanksApplication::~TanksApplication(void) {
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
     windowClosed(mWindow);
     delete mRoot;
-}
-
-void TanksApplication::loadEntity(Ogre::String entityName, Ogre::String meshFilename) {
-    Ogre::LogManager::getSingletonPtr()->logMessage("--- Loading entity:" + entityName + " from file: " + meshFilename);
-    mSceneMgr->createEntity(entityName, meshFilename);
-}
-
-void TanksApplication::createSceneNode(Ogre::String sceneNodeName, Ogre::String parentNodeName) {
-    Ogre::SceneNode *parent;
-
-    if (parentNodeName.empty() || parentNodeName == "root") {
-        parent = mSceneMgr->getRootSceneNode() ; //->createChildSceneNode(Ogre::Vector3(0, 5, 0));
-    } else {
-        parent = mSceneMgr->getSceneNode(parentNodeName);
-    }
-
-    parent->createChildSceneNode(sceneNodeName);
-}
-
-void TanksApplication::attachEntityToSceneNode(Ogre::String entityName, Ogre::String sceneNodeName) {
-    Ogre::SceneNode *parent = mSceneMgr->getSceneNode(sceneNodeName);
-    Ogre::Entity *entity = mSceneMgr->getEntity(entityName);
-    parent->attachObject(entity);
-}
-
-void TanksApplication::scaleSceneNode(Ogre::String nodeName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz) {
-    Ogre::SceneNode *node = mSceneMgr->getSceneNode(nodeName);
-    node->scale(dx, dy, dz);
-}
-
-void TanksApplication::translateSceneNode(Ogre::String nodeName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz) {
-    Ogre::SceneNode *node = mSceneMgr->getSceneNode(nodeName);
-    node->translate(dx, dy, dz);
-}
-
-void TanksApplication::rotateSceneNode(Ogre::String nodeName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz) {
-    Ogre::SceneNode *node = mSceneMgr->getSceneNode(nodeName);
-    Ogre::Matrix3 mat;
-    mat.FromEulerAnglesXYZ(Ogre::Radian(Ogre::Degree(dx)), Ogre::Radian(Ogre::Degree(dy)), Ogre::Radian(Ogre::Degree(dz)));
-    node->rotate(Ogre::Quaternion(mat));
-}
-
-void TanksApplication::log(Ogre::String message) {
-    Ogre::LogManager::getSingletonPtr()->logMessage(message);
 }
 
 //СОЗДАНИЕ РУТА И ЗАГРУЗКА ФАЙЛОВ КОНФИГУРАЦИИ
@@ -105,7 +61,6 @@ bool TanksApplication::go(void) {
     }
 
     if (mRoot->restoreConfig() || mRoot->showConfigDialog()) {
-
         //СОЗДАЕМ ОКНО И ЕГО ЗАГОЛОВОК
         //====================================================
         mWindow = mRoot->initialise(true, "test1");
@@ -142,6 +97,9 @@ bool TanksApplication::go(void) {
     //====================================================
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+    //INITIALIZE SCRIPT MANAGER
+    mScriptMgr = new ScriptManager(mRoot, mCamera, mSceneMgr);
+
     //ПОЛ
     //====================================================
     Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
@@ -156,88 +114,8 @@ bool TanksApplication::go(void) {
 
     std::cerr << "--- Hello, Floor!\n";
 
-    //Tank1
-    mChai->add(chaiscript::fun(&TanksApplication::log, this), "log");
-    mChai->add(chaiscript::fun(&TanksApplication::loadEntity, this), "loadEntity");
-    mChai->add(chaiscript::fun(&TanksApplication::createSceneNode, this), "createSceneNode");
-    mChai->add(chaiscript::fun(&TanksApplication::attachEntityToSceneNode, this), "attachEntityToSceneNode");
-    mChai->add(chaiscript::fun(&TanksApplication::scaleSceneNode, this), "scaleSceneNode");
-    mChai->add(chaiscript::fun(&TanksApplication::translateSceneNode, this), "translateSceneNode");
-    mChai->add(chaiscript::fun(&TanksApplication::rotateSceneNode, this), "rotateSceneNode");
-
     // eval script
-    std::string scriptFileName = "tank1_loader.chai";
-    std::string resourceGroup(Ogre::ResourceGroupManager::getSingletonPtr()->findGroupContainingResource(scriptFileName));
-    Ogre::FileInfoListPtr FInfoList = Ogre::ResourceGroupManager::getSingletonPtr()->listResourceFileInfo("Scripts");
-
-    Ogre::LogManager::getSingletonPtr()->logMessage("--- Loading script from file:");
-    Ogre::LogManager::getSingletonPtr()->logMessage(Ogre::StringConverter::toString(FInfoList->size()));
-    Ogre::LogManager::getSingletonPtr()->logMessage(FInfoList->at(0).archive->getName() + "/" + FInfoList->at(0).filename);
-
-    mChai->eval_file(FInfoList->at(0).archive->getName() + "/" + FInfoList->at(0).filename);
-    // std::string result = mChai.eval_file<std::string>("myfile.chai");
-
-    //====================================================
-    /*Ogre::Entity *tank1Entity = mSceneMgr->createEntity("tank1", "Body1.mesh");
-    Ogre::SceneNode *tank1 = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, 5, 0));
-    tank1->attachObject(tank1Entity);
-    //tank1->scale(40, 40, 40);//увеличиваем
-    //Ogre::SkeletonInstance *tank1Skeleton = tank1Entity->getSkeleton();
-    //Ogre::Bone *tank1TowerBone = tank1Skeleton->getBone("TowerBone");
-
-    Ogre::Entity *tower1Entity = mSceneMgr->createEntity("tower1", "Tower1.mesh");
-    //Ogre::SkeletonInstance *tower1Skeleton = tower1Entity->getSkeleton();
-    // Ogre::Bone *tower1GunBone = tower1Skeleton->getBone("GunBone");
-
-    Ogre::Matrix3 tower1Orientation;
-    //tower1Orientation.FromEulerAnglesXYZ(Ogre::Degree(0), Ogre::Degree(-90), Ogre::Degree(0));
-    //Ogre::Vector3 tower1Offset(0, 0, 0);
-    Ogre::TagPoint *tower1 = tank1Entity->attachObjectToBone("TowerBone", tower1Entity);
-    //tower1->scale(0.4, 0.4, 0.4);
-
-    Ogre::Entity *gun1Entity = mSceneMgr->createEntity("gun1", "Gun1.mesh");
-    Ogre::Matrix3 gun1Orientation;
-    //gun1Orientation.FromEulerAnglesXYZ(Ogre::Degree(0), Ogre::Degree(90), Ogre::Degree(0));
-    //Ogre::Vector3 gun1Offset(0, 0, 0);
-    Ogre::TagPoint *gun1 = tower1Entity->attachObjectToBone("GunBone", gun1Entity);
-    //gun1->scale(0.1, 0.1, 0.1);
-
-    mSkeletonDebugger = new SkeletonDebug(tank1Entity, mSceneMgr, mCamera);
-
-    std::vector<Ogre::Entity *> wheelEntities;
-    std::vector<Ogre::TagPoint *> wheels;
-
-    for (int i = 1; i <= 3; i++) {
-        Ogre::String tagName = (boost::format("left_wheel%1%") % i).str();
-        Ogre::String boneName = (boost::format("LeftWheel%1%Bone") % i).str();
-        Ogre::Entity *entity = mSceneMgr->createEntity(tagName, "Wheel.mesh");
-        Ogre::TagPoint *wheel = tank1Entity->attachObjectToBone(boneName, entity);
-        //wheel->scale(0.25, 0.25, 0.25);
-
-        wheelEntities.push_back(entity);
-        wheels.push_back(wheel);
-    }
-
-    for (int i = 1; i <= 3; i++) {
-        Ogre::String tagName = (boost::format("right_wheel%1%") % i).str();
-        Ogre::String boneName = (boost::format("RightWheel%1%Bone") % i).str();
-        Ogre::Entity *entity = mSceneMgr->createEntity(tagName, "Wheel.mesh");
-        Ogre::TagPoint *wheel = tank1Entity->attachObjectToBone(boneName, entity);
-        //wheel->scale(0.25, 0.25, 0.25);
-
-        wheelEntities.push_back(entity);
-        wheels.push_back(wheel);
-    }
-
-    //tank1TowerBone->addChild(tower1);*/
-
-    //ГОТОВИМ АНИМАЦИЮ МОДЕЛИ JAIQUA
-    //====================================================
-    /*Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_LINEAR);
-    Ogre::Animation::setDefaultRotationInterpolationMode(Ogre::Animation::RIM_LINEAR);
-    mAnimation = Jaiqua->getAnimationState("Sneak");*/
-    //mCharSceneNode->pitch(Ogre::Degree(90));
-    //mCharSceneNode->yaw(Ogre::Degree(-128));
+    mScriptMgr->runScript("tank1_loader.chai");
 
     //ВКЛЮЧАЕМ СВЕТ, СКАЙБОКС, ТЕНИ И ПРОЧЕЕ
     //====================================================
@@ -316,12 +194,6 @@ bool TanksApplication::frameRenderingQueued(const Ogre::FrameEvent &evt) {
             mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mCamera->
                     getDerivedOrientation().z));
         }
-
-        //ВКЛЮЧАЕМ АНИМАЦИЮ МОДЕЛИ JAIQUA
-        //====================================================
-        /*mAnimation->setLoop(true);
-        mAnimation->addTime(evt.timeSinceLastFrame);
-        mAnimation->setEnabled(true);*/
     }
     return true;
 }

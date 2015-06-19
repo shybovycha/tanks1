@@ -12,7 +12,7 @@ set(SOURCE_FILES
     src/SkeletonDebug.cpp
     src/TanksApplication.cpp)
 
-add_executable(tanks ${SOURCE_FILES})
+add_executable(tanks ${SOURCE_FILES} src/ScriptManager.cpp src/ScriptManager.h)
 
 pkg_search_module(OGRE REQUIRED OGRE)
 pkg_search_module(OIS REQUIRED OIS)

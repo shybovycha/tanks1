@@ -2,6 +2,23 @@ def load() {
     loadEntity("tank2", "Body1.mesh");
     createSceneNode("tank2Node", "root");
     attachEntityToSceneNode("tank2", "tank2Node");
+    scaleSceneNode("tank2Node", 10, 10, 10);
+
+    for (var i = 1; i <= 3; ++i) {
+        loadEntity("LWheel${i}", "Wheel.mesh");
+        createSceneNode("LWheel${i}Node", "root");
+        attachEntityToSceneNode("LWheel${i}", "LWheel${i}Node");
+        scaleSceneNode("LWheel${i}Node", 10, 10, 10);
+        rotateSceneNode("LWheel${i}Node", 0, 90, 0);
+    }
+
+    for (var i = 1; i <= 3; ++i) {
+        loadEntity("RWheel${i}", "Wheel.mesh");
+        createSceneNode("RWheel${i}Node", "root");
+        attachEntityToSceneNode("RWheel${i}", "RWheel${i}Node");
+        scaleSceneNode("RWheel${i}Node", 10, 10, 10);
+        rotateSceneNode("RWheel${i}Node", 0, 90, 0);
+    }
 }
 
 load();

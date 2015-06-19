@@ -21,6 +21,7 @@
 #include "SdkTrays.h"
 #include "SdkCameraMan.h"
 #include "SkeletonDebug.h"
+#include "ScriptManager.h"
 
 class TanksApplication : public Ogre::FrameListener, public Ogre::WindowEventListener,
     public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener {
@@ -39,7 +40,7 @@ protected:
     Ogre::AnimationState* mAnimation;
     Ogre::OverlaySystem *mOverlaySystem;
     SkeletonDebug* mSkeletonDebugger;
-    chaiscript::ChaiScript* mChai;
+    ScriptManager* mScriptMgr;
 
     //OGREBITES
     //====================================================
@@ -74,14 +75,5 @@ protected:
     //====================================================
     virtual void windowResized(Ogre::RenderWindow* rw);
     virtual void windowClosed(Ogre::RenderWindow* rw);
-
-    // Scripting-exposed methods
-    void log(Ogre::String message);
-    void loadEntity(Ogre::String entityName, Ogre::String meshFilename);
-    void createSceneNode(Ogre::String sceneNodeName, Ogre::String parentNodeName);
-    void attachEntityToSceneNode(Ogre::String entityName, Ogre::String sceneNodeName);
-    void scaleSceneNode(Ogre::String entityName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz);
-    void translateSceneNode(Ogre::String entityName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz);
-    void rotateSceneNode(Ogre::String entityName, Ogre::Real dx, Ogre::Real dy, Ogre::Real dz);
 };
 #endif
